@@ -1,14 +1,15 @@
 # Goth_Sudoku
 
+## WIP
+
 Sudoku built with goth stack
 
-# WIP 
 ### Go - Go
 ### T - Tailwind
-### H - HTML
+### H - HTMX
 
 
-TODO 
+# TODO 
 
 - [x] Create Sudoku Solver
 - [x] Create Sudoku Generator

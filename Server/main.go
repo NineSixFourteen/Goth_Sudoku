@@ -118,7 +118,7 @@ func main() {
 }
 
 func getNewBoard(diff  int) Board {
-    board := toBoard(makeNewBoard())
+    board := toBoard(src.RemoveSquares(makeNewBoard(),51))
     return removeSquare(board, diff)
 }
 

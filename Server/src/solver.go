@@ -2,6 +2,7 @@ package src
 
 import (
 	"fmt"
+	"math/rand/v2"
 )
 
 func Ten() int {
@@ -69,6 +70,57 @@ func illegalRow(board [][]int) bool {
         }
     }
     return false;
+}
+
+func RemoveSquares(board [][]int, num int) [][]int {
+    nBoard := clone(board)
+    for i := 0; i < num;i++ {
+        x := rand.IntN(9);
+        y := rand.IntN(9);
+        temp := nBoard[x][y]
+        nBoard[x][y] = 0;
+        for !isUnique(nBoard) {
+            nBoard[x][y] = temp;
+            x := rand.IntN(9);
+            y := rand.IntN(9);
+            temp = nBoard[x][y];
+            nBoard[x][y] = 0;
+        }
+    }
+    return nBoard
+}
+
+var found bool = false
+func isUnique(board[][]int) bool {
+    found = false;
+    return isUniqueHelper(board)
+}
+
+func isUniqueHelper(board [][]int) bool {
+    nBoard := clone(board)
+    for x := 0; x < 9; x++ {
+		for y := 0; y < 9; y++ {
+			if nBoard[x][y] == 0 {
+				for number := 1; number < 10; number++ {
+					if possible(board, x, y, number) {
+                        nBoard[x][y] = number;
+                        unq := isUniqueHelper(nBoard)
+                        if(!unq){
+                            return false    
+                        }
+                        nBoard[x][y] = 0;
+					}
+				}
+                return true 
+			}
+		}
+	}
+    if !found {
+        found = true
+        return true
+    }else {
+        return false
+    }
 }
 
 func illegalCol(board [][]int) bool {
