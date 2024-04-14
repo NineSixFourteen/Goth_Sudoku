@@ -16,6 +16,7 @@ type Square struct {
     Square [][]int
 }
 
+
 type Board struct {
     Board [][]Square
 }
