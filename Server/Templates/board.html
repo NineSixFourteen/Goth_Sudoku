@@ -1,0 +1,29 @@
+
+{{ block "board" . }} 
+<div class="columns-3">
+    {{ range $val := .Board }}
+        <div >
+            {{ range $val1 := $val}}
+                {{ template "square" $val1 }}
+            {{end}}
+        </div>
+    {{ end}}
+
+</div>
+{{ end }}
+{{ define "square"}}
+            <div class="border-2  border-sky-500 mb-4 ml-4">
+                {{ range $row := .Square}}
+                <div class="grid grid-cols-3">
+                    {{ range $value := $row}}
+                    <button class="border-2 hover:bg-zinc-200 bg-white border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >
+                        {{ if eq $value 0 }} 
+                        {{ else }} {{$value}}
+                        {{end}}
+                    </button>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+{{end}}
+
