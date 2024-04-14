@@ -8,7 +8,6 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strconv"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
