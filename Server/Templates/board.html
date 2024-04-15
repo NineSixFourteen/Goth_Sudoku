@@ -4,26 +4,57 @@
     {{ range $val := .Board }}
         <div >
             {{ range $val1 := $val}}
-                {{ template "square" $val1 }}
+                {{ template "squares" $val1 }}
             {{end}}
         </div>
     {{ end}}
 
 </div>
 {{ end }}
-{{ define "square"}}
-            <div class="border-2  border-sky-500 mb-4 ml-4">
-                {{ range $row := .Square}}
-                <div class="grid grid-cols-3">
-                    {{ range $value := $row}}
-                    <button class="border-2 hover:bg-zinc-200 bg-white border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >
-                        {{ if eq $value 0 }} 
-                        {{ else }} {{$value}}
-                        {{end}}
-                    </button>
-                    {{end}}
-                </div>
+{{ define "squares"}}
+    <div class="border-2  border-sky-500 mb-4 ml-4">
+        {{ range $row := .Square}}
+            <div class="grid grid-cols-3">
+                {{ range $value := .}}
+                    {{ template "square" $value }}
                 {{end}}
             </div>
+        {{end}}
+    </div>
 {{end}}
 
+{{ define "square" }} 
+    {{ if eq .Appearance 0 }}
+        {{template "square0" .Value }}   
+    {{ else }}
+        {{ if eq .Appearance 1}} 
+            {{template "square1" .Value }}
+        {{else}}
+            {{template "square2" .}}
+        {{end}}
+    {{end}}
+{{end}}
+
+{{ define "square0" }}
+     <button class="border-2 hover:bg-zinc-200 bg-white border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >       
+        {{template "displayValue" .}} 
+     </button>
+{{end}}
+
+{{ define "square1" }}  
+    <button class="border-2 hover:bg-zinc-200 bg-amber-300 border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >   
+        {{template "displayValue" .}} 
+    </button>
+{{end}}
+
+{{ define "square2" }}
+    <button class="border-2 hover:bg-zinc-200 bg-sky-950 border-teal-600 xl:text-2xl text-6xl text-white xl:h-10  h-32 " >             
+        {{template "displayValue" .}} 
+    </button>
+{{end}}
+
+{{ define "displayValue" }}
+    {{ if eq . 0}}
+    {{ else }}{{.}}      
+    {{ end }}
+{{ end }}
