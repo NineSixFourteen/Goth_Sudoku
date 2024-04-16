@@ -6,19 +6,28 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-type Data struct{
-    Button []Button
-}
 
 type Button struct {
     Get string 
     Message string
+}
+
+type GameButton struct {
+    First string
+    Rest string
+}
+
+type PageState struct {
+    DifficultyButtons []Button 
+    SmallButtons      []GameButton
+    BigButtons        []GameButton
+    KeyPad            [][]int
+    Board             Board.Board
 }
 
 
@@ -43,13 +52,50 @@ func createButtons() []Button{
     return buttons
 }
 
+func createSmallButtons() []GameButton {
+    buttons := make([]GameButton,2)
+    buttons[0] = GameButton{
+        First: "U",
+        Rest: "ndo",
+    }
+    buttons[1] = GameButton{
+        First: "R",
+        Rest: "edo",
+    }
+    return buttons
+}
 
-func newData() Data {
-    return Data{
-        Button: createButtons(),
+func createBigButtons() []GameButton {
+    buttons := make([]GameButton,2)
+    buttons[0] = GameButton{
+        First: "N",
+        Rest: "otes",
+    }
+    buttons[1] = GameButton{
+        First: "G",
+        Rest: "ive up",
+    }
+    return buttons
+}
+
+func keyPad() [][]int {
+    return [][]int{
+        {1,2,3},
+        {4,5,6},
+        {7,8,9},
     }
 }
 
+func initPage() PageState {
+    state = Board.GetNewBoard(0, state);
+    return PageState{
+        Board: Board.GetBoard(state),
+        DifficultyButtons: createButtons(), 
+        SmallButtons: createSmallButtons(), 
+        BigButtons: createBigButtons(), 
+        KeyPad: keyPad(),
+    }
+}
 
 var logger = echo.New().Logger
 var state Board.BoardState; 
@@ -85,7 +131,7 @@ func NewTemplates() *Templates {
 }
 
 func hello (c echo.Context) error {
-    return c.Render(http.StatusOK,"index", newData())
+    return c.Render(http.StatusOK,"index", initPage())
 }
 
 func board(c echo.Context) error {
