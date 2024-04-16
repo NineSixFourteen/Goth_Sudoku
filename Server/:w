@@ -2,6 +2,7 @@ package src
 
 import (
 	"Server/main/Board"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 )
 
 type Data struct{
@@ -20,7 +20,6 @@ type Button struct {
     Get string 
     Message string
 }
-
 
 func createButtons() []Button{
     buttons := make([]Button, 4)
@@ -50,21 +49,17 @@ func newData() Data {
     }
 }
 
-
 var logger = echo.New().Logger
-var state Board.BoardState; 
 
 func StartServer(){
     e := echo.New();
     logger = e.Logger;
-    logger.SetLevel(log.DEBUG)
     e.Renderer = NewTemplates();
     e.Static("/", "static/css")
     e.Use(middleware.Logger())
     e.GET("/", hello);
     e.GET("/newGame/:id",board);
-    e.GET("/empty/:id", LoggerRequest);
-    e.GET("/key/:id", keyHandler);
+    e.GET("/empty", keyHeadler );
     e.Logger.Info(e.Start(":1323"))
 }
 
@@ -89,24 +84,15 @@ func hello (c echo.Context) error {
 }
 
 func board(c echo.Context) error {
-    diffs := c.Param("id")
+    diffs := c.QueryParam("id")
     diff, _ := strconv.Atoi(diffs)
-    logger.Info(c)
-    state = Board.GetNewBoard(diff, state);
-    return c.Render(http.StatusOK,"board", Board.GetBoard(state))  
+    logger.info(c)
+    return c.Render(http.StatusOK,"board", Board.GetNewBoard(diff))  
 }
 
-func LoggerRequest(c echo.Context) error {
-    logger.Info("C Botta ")
-    logger.Info(c)
+func keyHeadler(c echo.Context) error {
+    logger.info("C Botta ")
+    logger.info(c)
     return c.Render(http.StatusNoContent, "empty", []int{})
-}
-
-func keyHandler(c echo.Context) error {
-    val := c.Param("id");
-    vals, _ := strconv.Atoi(val)
-    state = Board.Handle(vals,state);
-    logger.Info(state)
-    return c.Render(http.StatusOK, "board", Board.GetBoard(state))
 }
 

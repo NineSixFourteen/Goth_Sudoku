@@ -1,5 +1,7 @@
 
-{{ block "board" . }} 
+{{ block "board" . }}
+
+{{template "keyhandlers" .}}
 <div class="columns-3">
     {{ range $val := .Board }}
         <div >
@@ -8,29 +10,46 @@
             {{end}}
         </div>
     {{ end}}
+</div> 
+{{ end }} 
 
-</div>
+{{ define "keyhandlers" }}
+<button style="visibility: hidden;" hx-target="#Board" hx-swap="" hx-get="key/10" hx-trigger="click, keydown[key == 'ArrowLeft'] from:body" >filler </button>
+<button style="visibility: hidden;" hx-target="#Board" hx-swap="" hx-get="key/11" hx-trigger="click, keydown[key == 'ArrowRight'] from:body" >filler </button>
+<button style="visibility: hidden;" hx-target="#Board" hx-swap="" hx-get="key/12" hx-trigger="click, keydown[key == 'ArrowUp'] from:body" >filler </button>
+<button style="visibility: hidden;" hx-target="#Board" hx-swap="" hx-get="key/13" hx-trigger="click, keydown[key == 'ArrowDown'] from:body" >filler </button>
+
+
+<button style="visibility: hidden;" target="#board" hx-get="key/1" hx-trigger="click, keyup[key == '1'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/2" hx-trigger="click, keyup[key == '2'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/3" hx-trigger="click, keyup[key == '3'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/4" hx-trigger="click, keyup[key == '4'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/5" hx-trigger="click, keyup[key == '5'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/6" hx-trigger="click, keyup[key == '6'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/7" hx-trigger="click, keyup[key == '7'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/8" hx-trigger="click, keyup[key == '8'] from:body" >filler </button>
+<button style="visibility: hidden;" target="#board" hx-get="key/9" hx-trigger="click, keyup[key == '9'] from:body" >filler </button>
+
 {{ end }}
-{{ define "squares"}}
-    <div class="border-2  border-sky-500 mb-4 ml-4">
-        {{ range $row := .Square}}
-            <div class="grid grid-cols-3">
-                {{ range $value := .}}
-                    {{ template "square" $value }}
-                {{end}}
-            </div>
-        {{end}}
-    </div>
-{{end}}
 
-{{ define "square" }} 
+{{ define "squares"}}
+<div class="border-2  border-sky-500 mb-4 ml-4"> 
+    {{ range $row := .Square}} 
+        <div class="grid grid-cols-3">
+            {{ range $value := .}} 
+                {{ template "square" $value }} 
+            {{end}} </div> {{end}} 
+    </div> 
+{{end}} 
+
+{{ define "square" }}
     {{ if eq .Appearance 0 }}
         {{template "square0" .Value }}   
     {{ else }}
         {{ if eq .Appearance 1}} 
             {{template "square1" .Value }}
         {{else}}
-            {{template "square2" .}}
+            {{template "square2" .Value}}
         {{end}}
     {{end}}
 {{end}}
@@ -41,7 +60,7 @@
      </button>
 {{end}}
 
-{{ define "square1" }}  
+{{ define "square1" }}
     <button class="border-2 hover:bg-zinc-200 bg-amber-300 border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >   
         {{template "displayValue" .}} 
     </button>
@@ -54,7 +73,7 @@
 {{end}}
 
 {{ define "displayValue" }}
-    {{ if eq . 0}}
+    {{ if eq . 0}} 
     {{ else }}{{.}}      
     {{ end }}
 {{ end }}

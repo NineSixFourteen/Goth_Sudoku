@@ -1,6 +1,9 @@
 package Board
 
-import "math/rand/v2"
+import (
+	"math/rand/v2"
+)
+
 
 type item struct {
     Value int 
@@ -15,31 +18,14 @@ type Board struct {
     Board [][]Square
 }
 
-func NewBoard() Board {
-    a := make([][]Square, 3)
-    for i := 0; i < 3; i++ {
-        a[i] = make([]Square, 3);
-        for j := 0; j < 3;j++ {
-            a[i][j] = newSquare();
-        }
-    }
-    return Board{
-        Board: a, 
-    }
+
+type BoardState struct {
+    OGBoad [][]int 
+    Board  [][]int
+    xPos   int 
+    yPos   int
 }
 
-func newSquare() Square {
-    a := make([][]item, 3)
-    for i := 0; i < 3; i++ {
-        a[i] = make([]item, 3);
-        for j := 0; j < 3;j++ {
-            a[i][j] = item{Value: 1, Appearance: 0} ;
-        } 
-    }
-    return Square {
-        Square: a,
-    }
-}
 
 func emptyBoard() [][]int {
     board := make([][]int, 9);
@@ -50,7 +36,8 @@ func emptyBoard() [][]int {
 }
 
 
-func ToBoard(board [][]item) Board {
+func ToBoard(state BoardState) Board {
+    board := addAppearnce(state.Board, state.xPos, state.yPos)
     return Board{
         Board: [][]Square{
             {
@@ -104,7 +91,7 @@ func ToBoard(board [][]item) Board {
                 []item {
                     board[3][6],board[3][7],board[3][8],
                     board[4][6],board[4][7],board[4][8],
-                    board[5][6],board[5][7],board[6][8],
+                    board[5][6],board[5][7],board[5][8],
                 }),
                 toSquare(
                 []item {
@@ -117,6 +104,12 @@ func ToBoard(board [][]item) Board {
     }
 }
 
+
+    
+func GetBoard(board BoardState) Board {
+    return ToBoard(board );
+}
+
 func toSquare( nums []item) Square{
     return Square {
         Square: [][]item{
@@ -127,7 +120,51 @@ func toSquare( nums []item) Square{
     }
 }
 
-func GetNewBoard(diff  int) Board {
+func Handle(key int, state BoardState) BoardState {
+    switch(key) {
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        case 8:
+            break;
+        case 9:
+            break;
+        case 10:
+            if state.yPos > 0 && state.yPos <= 8{
+               state.yPos--;
+            }
+            break;
+        case 11:
+            if state.yPos >= 0 && state.yPos < 8{
+                state.yPos++;
+            }
+            break;
+        case 12: 
+            if state.xPos > 0 && state.xPos <= 8{
+                state.xPos-- 
+            }
+            break;
+        case 13:
+            if state.xPos >= 0 && state.xPos < 8{
+               state.xPos++;
+         }
+            break;
+    }
+    return state;
+}
+
+func GetNewBoard(diff  int, state BoardState) BoardState {
     pieces := 0;
     switch(diff) {
         case 0: 
@@ -139,8 +176,13 @@ func GetNewBoard(diff  int) Board {
         default: 
             pieces = 40;
     }
-    board := ToBoard(addAppearnce(RemoveSquares(makeNewBoard(),pieces), 2,8))
-    return board
+    board := RemoveSquares(makeNewBoard(),pieces)
+    return BoardState{
+        OGBoad: board,
+        Board: board,
+        xPos: 4,
+        yPos: 4,
+    }
 }
 
 func addAppearnce(board [][]int, selcX int, selcY int) [][]item {
