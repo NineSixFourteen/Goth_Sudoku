@@ -8,6 +8,7 @@ import (
 type item struct {
     Value int 
     Appearance int
+    TextColour int
 }
 
 type Square struct {
@@ -121,45 +122,47 @@ func toSquare( nums []item) Square{
 }
 
 func Handle(key int, state BoardState) BoardState {
-    switch(key) {
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        case 8:
-            break;
-        case 9:
-            break;
-        case 10:
-            if state.yPos > 0 && state.yPos <= 8{
-               state.yPos--;
+    if len(state.Board) > 0{
+        switch(key) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
+                if state.yPos > 0 && state.yPos <= 8{
+                    state.yPos--;
+                }
+                break;
+            case 11:
+                if state.yPos >= 0 && state.yPos < 8{
+                    state.yPos++;
+                }   
+                break;
+            case 12: 
+                if state.xPos > 0 && state.xPos <= 8{
+                    state.xPos-- 
+                }
+                break;
+            case 13:
+             if state.xPos >= 0 && state.xPos < 8{
+                state.xPos++;
             }
-            break;
-        case 11:
-            if state.yPos >= 0 && state.yPos < 8{
-                state.yPos++;
-            }
-            break;
-        case 12: 
-            if state.xPos > 0 && state.xPos <= 8{
-                state.xPos-- 
-            }
-            break;
-        case 13:
-            if state.xPos >= 0 && state.xPos < 8{
-               state.xPos++;
-         }
-            break;
+                break;
+        }
     }
     return state;
 }
@@ -193,21 +196,29 @@ func addAppearnce(board [][]int, selcX int, selcY int) [][]item {
     for i := 0; i < 9 ; i++ {
         temp := make([]item, 9);
             for j := 0; j < 9; j++ {
+                valueSel := board[selcX][selcY] ;
                 if selcX == i && selcY == j {
-                    temp[j] = item{Value: board[i][j], Appearance: 2} 
+                    temp[j] = item{Value: board[i][j], Appearance: 3, TextColour: 1} 
                 } else if inSquare(square, i,j) {
-                    temp[j] = item{Value: board[i][j], Appearance: 1};
+                    temp[j] = item{Value: board[i][j], Appearance: ifSameElse(board[i][j], valueSel,1), TextColour: ifSameElse(board[i][j], valueSel,0) };
                 } else if i == selcX {
-                    temp[j] = item{Value: board[i][j], Appearance:1} 
+                    temp[j] = item{Value: board[i][j], Appearance: ifSameElse(board[i][j], valueSel,1), TextColour: ifSameElse(board[i][j], valueSel,0)}
                 } else if j == selcY {
-                    temp[j] = item{Value: board[i][j], Appearance:1} 
+                    temp[j] = item{Value: board[i][j], Appearance: ifSameElse(board[i][j], valueSel,1), TextColour: ifSameElse(board[i][j], valueSel,0) } 
                 } else {
-                    temp[j] = item{Value: board[i][j], Appearance:0} 
+                    temp[j] = item{Value: board[i][j], Appearance: ifSameElse(board[i][j], valueSel,0), TextColour: ifSameElse(board[i][j], valueSel,0) }
                 }
             }
         nBoard[i] = temp
         }        
     return nBoard;
+}
+
+func ifSameElse(val int, cVal int, els int) int {
+    if (val == cVal && val != 0) {
+        return 2; 
+    }
+    return els;
 }
 
 func inSquare(num int, col int, row int) bool {

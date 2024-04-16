@@ -2,7 +2,7 @@
 {{ block "board" . }}
 
 {{template "keyhandlers" .}}
-<div class="columns-3">
+<div class="columns-3 w-fit">
     {{ range $val := .Board }}
         <div >
             {{ range $val1 := $val}}
@@ -33,7 +33,7 @@
 {{ end }}
 
 {{ define "squares"}}
-<div class="border-2  border-sky-500 mb-4 ml-4"> 
+<div class="border-2  border-sky-500 mb-2 ml-2 w-fit"> 
     {{ range $row := .Square}} 
         <div class="grid grid-cols-3">
             {{ range $value := .}} 
@@ -44,36 +44,68 @@
 
 {{ define "square" }}
     {{ if eq .Appearance 0 }}
-        {{template "square0" .Value }}   
+        {{template "square0" .}}   
     {{ else }}
         {{ if eq .Appearance 1}} 
-            {{template "square1" .Value }}
+            {{template "square1" .}}
         {{else}}
-            {{template "square2" .Value}}
+            {{ if eq .Appearance 2 }} 
+                {{template "square2" .}}
+            {{else}}
+                {{template "square3" .}}
+            {{end}}
         {{end}}
     {{end}}
 {{end}}
 
+
+
 {{ define "square0" }}
-     <button class="border-2 hover:bg-zinc-200 bg-white border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >       
-        {{template "displayValue" .}} 
+     <button class="border-2 hover:bg-zinc-200 bg-white border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-20 xl:w-20 h-32 " >       
+        {{template "displayText" .}} 
      </button>
 {{end}}
 
 {{ define "square1" }}
-    <button class="border-2 hover:bg-zinc-200 bg-amber-300 border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-10  h-32 " >   
-        {{template "displayValue" .}} 
+    <button class="border-2 hover:bg-zinc-200 bg-cyan-100 border-teal-600 xl:text-2xl text-6xl text-sky-900 xl:h-20 xl:w-20  h-32 " >   
+        {{template "displayText" .}} 
     </button>
 {{end}}
 
 {{ define "square2" }}
-    <button class="border-2 hover:bg-zinc-200 bg-sky-950 border-teal-600 xl:text-2xl text-6xl text-white xl:h-10  h-32 " >             
-        {{template "displayValue" .}} 
+    <button class="border-2 hover:bg-zinc-200 bg-cyan-300 border-teal-600 xl:text-2xl text-6xl text-white xl:h-20  h-32 xl:w-20 " >             
+        {{template "displayText" .}} 
     </button>
 {{end}}
+
+{{ define "square3" }}
+    <button class="border-2 hover:bg-zinc-200 bg-sky-950 border-teal-600 xl:text-2xl text-6xl text-white xl:h-20 h-32 xl:w-20" >             
+        {{template "displayText" .}} 
+    </button>
+{{end}}
+
+{{ define "displayText" }}
+    {{ if eq .TextColour 0 }}
+        <div class="text-black">
+            {{ template "displayValue" .Value}}
+        </div>
+    {{ else }}
+        {{ if eq .TextColour 1}} 
+        <div class="text-white">
+            {{ template "displayValue" .Value}}
+        </div>
+        {{else}}
+        <div class="text-teal-950 font-bold">
+            {{ template "displayValue" .Value}}
+        </div>
+        {{end}}
+    {{end}}
+{{ end }}
 
 {{ define "displayValue" }}
     {{ if eq . 0}} 
     {{ else }}{{.}}      
     {{ end }}
 {{ end }}
+
+
