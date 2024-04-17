@@ -26,27 +26,32 @@ type PageState struct {
     DifficultyButtons []Button 
     SmallButtons      []GameButton
     BigButtons        []GameButton
-    KeyPad            [][]int
-    Board             Board.Board
+    KeyPad            [][]Key
+    StartDiff         string
+}
+
+type Key struct {
+    Value int 
+    Addr string
 }
 
 
 func createButtons() []Button{
     buttons := make([]Button, 4)
     buttons[0] = Button{
-        Get: "/newGame/0",
+        Get: "/new/0",
         Message: "Easy",
     }
     buttons[1] = Button{
-        Get: "/newGame/1",
+        Get: "/new/1",
         Message: "Medium",
     }
     buttons[2] = Button{
-        Get: "/newGame/2",
+        Get: "/new/2",
         Message: "Hard",
     }
     buttons[3] = Button{
-        Get: "/newGame/5",
+        Get: "/new/5",
         Message: "Other",
     }
     return buttons
@@ -78,22 +83,27 @@ func createBigButtons() []GameButton {
     return buttons
 }
 
-func keyPad() [][]int {
-    return [][]int{
-        {1,2,3},
-        {4,5,6},
-        {7,8,9},
+func keyPad() [][]Key {
+    keys := make([][]Key, 3)
+    for i := 0; i < 3;i++ {
+        temp := make([]Key,3) 
+        for j := 0; j < 3; j++ {
+            temp[j] = Key{
+                Value: i * 3 + j + 1,
+                Addr: "key/" + strconv.Itoa(i * 3 + j + 1)}
+        }
+        keys[i] = temp;
     }
+    return keys
 }
 
 func initPage() PageState {
-    state = Board.GetNewBoard(0, state);
     return PageState{
-        Board: Board.GetBoard(state),
         DifficultyButtons: createButtons(), 
         SmallButtons: createSmallButtons(), 
         BigButtons: createBigButtons(), 
         KeyPad: keyPad(),
+        StartDiff: "/newGame/1/",
     }
 }
 
@@ -106,11 +116,14 @@ func StartServer(){
     logger.SetLevel(log.DEBUG)
     e.Renderer = NewTemplates();
     e.Static("/", "static/css")
+    e.Static("/Images/", "static/Images")
     e.Use(middleware.Logger())
     e.GET("/", hello);
+    e.GET("/new/:id", new);
     e.GET("/newGame/:id",board);
     e.GET("/empty/:id", LoggerRequest);
     e.GET("/key/:id", keyHandler);
+    e.GET("/click/:x/:y", clickHandler);
     e.Logger.Info(e.Start(":1323"))
 }
 
@@ -134,6 +147,11 @@ func hello (c echo.Context) error {
     return c.Render(http.StatusOK,"index", initPage())
 }
 
+func new(c echo.Context) error {
+    diffs := c.Param("id");
+    return c.Render(http.StatusOK, "loadtext", "/newGame/" + diffs)
+}
+
 func board(c echo.Context) error {
     diffs := c.Param("id")
     diff, _ := strconv.Atoi(diffs)
@@ -152,7 +170,17 @@ func keyHandler(c echo.Context) error {
     val := c.Param("id");
     vals, _ := strconv.Atoi(val)
     state = Board.Handle(vals,state);
+    logger.Info(vals)
     logger.Info(state)
+    return c.Render(http.StatusOK, "board", Board.GetBoard(state))
+}
+
+func clickHandler(c echo.Context) error {
+    xPos := c.Param("x");
+    yPos := c.Param("y");
+    x, _ := strconv.Atoi(xPos);
+    y, _ := strconv.Atoi(yPos);
+    state = Board.ClickHandle(x, y, state);
     return c.Render(http.StatusOK, "board", Board.GetBoard(state))
 }
 
