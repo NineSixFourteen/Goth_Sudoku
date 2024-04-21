@@ -1,0 +1,60 @@
+{{ define "ui" }}
+    {{ template "Stats" .UI }}
+    {{ template "GameButtons" .}}
+    {{ template "keyRow" .KeyPad }}
+{{ end }}
+
+{{define "smallButton" }}
+    <button class="border-2 text-left w-40 border-violet-500 bg-white hover:bg-pink-100 hover:bg-opacity-45 rounded-3xl"> 
+        <div class="flex" > 
+            <div class="rounded-2xl bg-violet-500">
+                <span class="pl-4 pr-4 text-white text-6xl text-bold">{{.First }}</span>
+            </div> 
+            <span class="text-2xl pt-6 text-violet-900 " >{{.Rest}}</span>
+        </div>
+    </button>
+{{end}}
+
+{{ define "GameButtons" }}
+    <div id="GameButtons" class="h-56">
+        <div class="mb-3">
+            {{ range $smallButton := .SmallButtons}}
+                {{template "smallButton" $smallButton}}
+            {{end}}
+        </div>
+        {{range $bigButton := .BigButtons}}
+            {{template "bigButton" $bigButton}}
+        {{end}}
+    </div>
+{{ end }}
+
+{{ define "bigButton" }}
+    <button class="border-2 hover:bg-pink-100 hover:bg-opacity-45 text-left mb-3 w-80 border-violet-500 bg-white rounded-3xl"> 
+        <div class="flex pr-2 " >
+            <div class="rounded-2xl bg-violet-500 ">
+                <span class="pl-4 pr-4 text-white text-6xl text-bold">{{.First}}</span>
+            </div> 
+            <span class="text-4xl mt-4 text-violet-900 " >{{.Rest}}</span> 
+        </div>
+    </button><br>
+{{end}}
+
+{{ define "Stats" }} 
+    <div id="Stats" class="h-52 pt-3 text-violet-900">
+        <span class="text-5xl pb-1" > Mistakes: {{.Mistakes}}</span><br>
+        <span class="text-5xl pb-1" > Hints: {{.Hints}}</span><br>
+        <span class="text-5xl" > Remaing<br> Tiles: {{.Tiles}} </span><br>
+    </div><br>
+{{end}}
+
+{{ define "keyRow" }}
+    <div id="KeyPad" class="h-64 mt-4 justify-center">
+    {{ range $row := . }}
+        <div class="flex w-80 ">
+            {{ range $square := $row}}
+            <button hx-get={{$square.Addr}} hx-target="#Game" class="border-2 hover:bg-violet-50 border-violet-600 w-28 h-20 text-2xl text-violet-950 font-bold bg-white"> {{$square.Value}} </button>
+            {{end}}
+        </div>
+    {{end}}
+    </div>
+{{end}}

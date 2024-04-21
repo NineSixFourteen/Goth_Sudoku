@@ -12,99 +12,34 @@
             }, false);
         </script>
          <link rel="stylesheet" href="./output.css">
+
     </head>
     <body class="bg-rose-50">
-    <div class="bg-sky-500 bg-opacity-45">
+        {{template "navbar" .DifficultyButtons }}
     <div class="container">
-        <div id="Buttons" class="grid grid-cols-2 xl:grid-cols-5 xl:text-2xl text-5xl " >   
-            <h1 class="text-center text-5xl text-sky-800 font-bold mt-2 grid-cols-1" >
-                Sudoku
-            </h1>
-            {{range $button := .DifficultyButtons}}
-                {{template "dButton" $button }} 
-            {{end}}
-        </div>
-    </div>
-    </div>
-    <div class="container">
-        <div id = "Game" class="flex pl-72 items-center justify-center ">
-            <div id="Board" class="col-span-3 ">
-                {{ template "loadtext" .StartDiff }}
-            </div>
-        <div id= "ui" class="content-center items-center mt-4 rounded-3xl bg-violet-100 ml-8 border-4 border-purple-950 pt-5 pl-10 pr-10">  
-            {{ template "Stats" . }}
-            {{ template "GameButtons" .}}
-            {{ template "keyRow" .KeyPad }}
-        </div>
-    </div>
+        {{template "Game" .Other}}
     </div>
     </body>
 </html>
 {{end}}
 
 {{ block "loadtext" .}}
-    <div hx-get={{.}} hx-target="#Board" hx-trigger="load" class="ml-32 mr-32 w-96 text-5xl">
+    <div hx-get={{.}} hx-target="#Game" hx-trigger="load" class="ml-32 mr-32 w-96 text-5xl">
         Loading <br>
     <img class="m-5 h-24 w-24" src="./Images/loading-gif.gif">
     </div>
 {{ end }}
 
-{{define "smallButton" }}
-    <button class="border-2 text-left w-40 border-violet-500 bg-white hover:bg-pink-100 hover:bg-opacity-45 rounded-3xl"> 
-        <div class="flex" > 
-            <div class="rounded-2xl bg-violet-500">
-                <span class="pl-4 pr-4 text-white text-6xl text-bold">{{.First }}</span>
-            </div> 
-            <span class="text-2xl pt-6 text-violet-900 " >{{.Rest}}</span>
-    </button>
-{{end}}
-
-{{ define "GameButtons" }}
-    <div id="GameButtons" class="h-56">
-        <div class="mb-3">
-            {{ range $smallButton := .SmallButtons}}
-                {{template "smallButton" $smallButton}}
+{{ block "Game" . }}
+    <div id = "Game" class="flex pl-24 items-center justify-center ">
+        <div id="Board" class="col-span-3 ">
+            {{if .HasBoard }}
+                {{template "board" .Board}}
+            {{else}}
+                {{template "loadtext" .Difficulty}}
             {{end}}
         </div>
-        {{range $bigButton := .BigButtons}}
-            {{template "bigButton" $bigButton}}
-        {{end}}
+    <div id= "ui" class="content-center items-center mt-4 rounded-3xl bg-violet-100 ml-8 border-4 border-purple-950 pt-5 pl-10 pr-10">  
+        {{template "ui" .}}
     </div>
-{{ end }}
-
-{{ define "bigButton" }}
-    <button class="border-2 hover:bg-pink-100 hover:bg-opacity-45 text-left mb-3 w-80 border-violet-500 bg-white rounded-3xl"> 
-        <div class="flex pr-2 " >
-            
-            <div class="rounded-2xl bg-violet-500 ">
-                <span class="pl-4 pr-4 text-white text-6xl text-bold">{{.First}}</span>
-            </div> 
-            <span class="text-4xl mt-4 text-violet-900 " >{{.Rest}}</span> 
-        </div>
-    </button><br>
-{{end}}
-
-{{ define "Stats" }} 
-    <div id="Stats" class="h-52 pt-3 text-violet-900">
-        <span class="text-5xl pb-1" > Mistakes: 0/3</span><br>
-        <span class="text-5xl pb-1" > Hints: 0/2 </span><br>
-        <span class="text-5xl" > Remaing<br> Tiles: </span><br>
-    </div><br>
-{{end}}
-
-{{ define "keyRow" }}
-    <div id="KeyPad" class="h-64 mt-4 justify-center">
-    {{ range $row := . }}
-        <div class="flex w-80 ">
-            {{ range $square := $row}}
-            <button hx-get={{$square.Addr}} hx-target="#Board" class="border-2 hover:bg-violet-50 border-violet-600 w-28 h-20 text-2xl text-violet-950 font-bold bg-white"> {{$square.Value}} </button>
-            {{end}}
-        </div>
-    {{end}}
-{{end}}
-
-{{define "dButton"}} 
-<button hx-get={{.Get}} hx-target="#Board" hx-confirm="Are you sure you want to start a new game?" class="hover:bg-slate-200  bg-white border-2 m-2 border-sky-600 p-2 rounded-xl  text-slate-700">
-        {{.Message}}
-    </button>
-{{end}}
+{{ end}}
